@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Нейросети простым языком — мини-урок</title>
+<style>
+  :root {
+    --bg-0: #0a0a12;
+    --bg-1: #12121f;
+    --bg-2: #1a1a2e;
+    --accent-1: #7c5cff;
+    --accent-2: #ff5ca8;
+    --accent-3: #5ce1ff;
+    --text-main: #f2f2f7;
+    --text-dim: #a6a6bf;
+    --card-bg: rgba(255, 255, 255, 0.04);
+    --card-border: rgba(255, 255, 255, 0.09);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Arial, sans-serif;
+    background: radial-gradient(circle at 20% 0%, #23204a 0%, transparent 45%),
+                radial-gradient(circle at 85% 15%, #3a1f4d 0%, transparent 40%),
+                radial-gradient(circle at 50% 100%, #131327 0%, transparent 50%),
+                linear-gradient(180deg, var(--bg-0), var(--bg-1) 45%, var(--bg-2));
+    color: var(--text-main);
+    min-height: 100vh;
+    overflow-x: hidden;
+    line-height: 1.5;
+  }
+
+  .glow {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(90px);
+    opacity: 0.35;
+    z-index: 0;
+    pointer-events: none;
+  }
+  .glow-1 { width: 420px; height: 420px; background: var(--accent-1); top: -120px; left: -100px; }
+  .glow-2 { width: 380px; height: 380px; background: var(--accent-2); bottom: -140px; right: -100px; }
+  .glow-3 { width: 300px; height: 300px; background: var(--accent-3); top: 40%; left: 60%; opacity: 0.18; }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 64px 24px 80px;
+  }
+
+  header.hero {
+    text-align: center;
+    padding-bottom: 32px;
+    animation: fadeUp 0.8s ease both;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    color: var(--text-dim);
+    font-size: 13px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    margin-bottom: 24px;
+    letter-spacing: 0.02em;
+  }
+  .badge svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+  h1 {
+    font-size: clamp(28px, 5vw, 46px);
+    font-weight: 800;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    background: linear-gradient(100deg, var(--accent-3), var(--accent-1) 45%, var(--accent-2) 85%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    margin-bottom: 20px;
+  }
+
+  h1 .quote { color: var(--text-main); -webkit-text-fill-color: var(--text-main); }
+
+  .subtitle {
+    max-width: 620px;
+    margin: 0 auto;
+    color: var(--text-dim);
+    font-size: clamp(15px, 2.2vw, 18px);
+  }
+
+  .top-cta {
+    margin-top: 36px;
+  }
+
+  section {
+    margin-top: 56px;
+    animation: fadeUp 0.8s ease both;
+  }
+
+  .section-title {
+    font-size: clamp(20px, 3vw, 26px);
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 32px;
+    color: var(--text-main);
+  }
+
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 18px;
+    padding: 28px 22px;
+    backdrop-filter: blur(6px);
+    transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+  }
+
+  .card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(255,255,255,0.22);
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  .icon-wrap {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 18px;
+    background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+  }
+  .icon-wrap svg { width: 26px; height: 26px; stroke: #fff; }
+
+  .card h3 {
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .card p {
+    color: var(--text-dim);
+    font-size: 14.5px;
+  }
+
+  .audience {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 20px;
+    padding: 32px;
+  }
+
+  .audience-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    margin-top: 20px;
+  }
+
+  .audience-grid h4 {
+    font-size: 15px;
+    color: var(--accent-3);
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .audience-grid ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .audience-grid li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    color: var(--text-dim);
+    font-size: 14.5px;
+  }
+
+  .audience-grid li svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    margin-top: 1px;
+    stroke: var(--accent-2);
+  }
+
+  .cta-block {
+    text-align: center;
+    margin-top: 64px;
+    padding: 44px 24px;
+    background: linear-gradient(160deg, rgba(124,92,255,0.18), rgba(255,92,168,0.12));
+    border: 1px solid var(--card-border);
+    border-radius: 24px;
+  }
+
+  .cta-block h2 {
+    font-size: clamp(20px, 3.4vw, 28px);
+    font-weight: 800;
+    margin-bottom: 12px;
+  }
+
+  .cta-block p {
+    color: var(--text-dim);
+    margin-bottom: 28px;
+    font-size: 15px;
+  }
+
+  .cta-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: linear-gradient(100deg, var(--accent-1), var(--accent-2));
+    color: #fff;
+    font-size: 17px;
+    font-weight: 700;
+    text-decoration: none;
+    padding: 16px 36px;
+    border-radius: 999px;
+    box-shadow: 0 0 0 0 rgba(124, 92, 255, 0.55);
+    animation: pulse 2.2s infinite;
+    transition: transform 0.2s ease;
+  }
+  .cta-btn:hover { transform: translateY(-2px) scale(1.02); }
+  .cta-btn svg { width: 20px; height: 20px; stroke: #fff; }
+
+  @keyframes pulse {
+    0%   { box-shadow: 0 0 0 0 rgba(124, 92, 255, 0.55); }
+    70%  { box-shadow: 0 0 0 18px rgba(124, 92, 255, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(124, 92, 255, 0); }
+  }
+
+  .link-line {
+    display: block;
+    margin-top: 18px;
+    color: var(--text-dim);
+    font-size: 14px;
+  }
+  .link-line a {
+    color: var(--accent-3);
+    text-decoration: none;
+    border-bottom: 1px dashed rgba(92, 225, 255, 0.4);
+    transition: color 0.2s ease, border-color 0.2s ease;
+  }
+  .link-line a:hover {
+    color: #fff;
+    border-color: #fff;
+  }
+
+  footer {
+    text-align: center;
+    margin-top: 56px;
+    color: rgba(166,166,191,0.6);
+    font-size: 13px;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 720px) {
+    .cards { grid-template-columns: 1fr; }
+    .audience-grid { grid-template-columns: 1fr; gap: 22px; }
+    .container { padding: 44px 18px 60px; }
+    .cta-block { padding: 32px 18px; border-radius: 18px; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="glow glow-1"></div>
+  <div class="glow glow-2"></div>
+  <div class="glow glow-3"></div>
+
+  <div class="container">
+
+    <header class="hero">
+      <div class="badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+        Мини-урок · 30 минут · для новичков
+      </div>
+      <h1>
+        <span class="quote">Мини-урок&nbsp;«</span>Нейросети простым языком<span class="quote">»:</span><br>
+        первые шаги за 30 минут
+      </h1>
+      <p class="subtitle">
+        Практический мини-урок для новичков, который поможет за 30 минут понять,
+        как работают нейросети, и сделать первые шаги с ними — без сложных
+        терминов и технических знаний.
+      </p>
+      <div class="top-cta">
+        <a class="cta-btn" href="https://t.me/anyjar" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          Начать урок бесплатно
+        </a>
+        <span class="link-line">или перейти напрямую: <a href="https://t.me/anyjar" target="_blank" rel="noopener">t.me/anyjar</a></span>
+      </div>
+    </header>
+
+    <section>
+      <h2 class="section-title">Почему этот урок работает</h2>
+      <div class="cards">
+
+        <div class="card">
+          <div class="icon-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.5 9a2.5 2.5 0 0 1 5 0c0 1.5-2.5 2-2.5 4M12 17h.01"/></svg>
+          </div>
+          <h3>Понятно даже новичку</h3>
+          <p>Никакого технического жаргона: объясняем на простых примерах и аналогиях из жизни, а не формулах и коде.</p>
+        </div>
+
+        <div class="card">
+          <div class="icon-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+          </div>
+          <h3>Экономия времени</h3>
+          <p>Всего 30 минут вместо часов чтения статей и просмотра длинных курсов — только суть, без воды.</p>
+        </div>
+
+        <div class="card">
+          <div class="icon-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8Z"/></svg>
+          </div>
+          <h3>Практика с первой минуты</h3>
+          <p>Сразу после урока вы сделаете свои первые шаги с нейросетями — не в теории, а на реальных примерах.</p>
+        </div>
+
+      </div>
+    </section>
+
+    <section>
+      <div class="audience">
+        <h2 class="section-title" style="margin-bottom:0;">Кому подходит и зачем</h2>
+        <div class="audience-grid">
+          <div>
+            <h4>Подходит, если вы</h4>
+            <ul>
+              <li>
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                Никогда не работали с нейросетями и не знаете, с чего начать
+              </li>
+              <li>
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                Хотите использовать ИИ в работе, учёбе или бизнесе, но боитесь «сложного»
+              </li>
+              <li>
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                Цените своё время и хотите быстрый результат без длинных курсов
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h4>Почему это выгодно</h4>
+            <ul>
+              <li>
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                Экономите недели самостоятельного разбора информации
+              </li>
+              <li>
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                Получаете рабочий навык, который сразу применяете на практике
+              </li>
+              <li>
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                Начинаете уверенно говорить и думать о нейросетях без страха
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta-block">
+      <h2>Готовы сделать первые шаги в мир нейросетей?</h2>
+      <p>Пройдите мини-урок прямо сейчас — это займёт всего 30 минут.</p>
+      <a class="cta-btn" href="https://t.me/anyjar" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        Получить урок в Telegram
+      </a>
+      <span class="link-line"><a href="https://t.me/anyjar" target="_blank" rel="noopener">t.me/anyjar</a></span>
+    </section>
+
+    <footer>
+      Мини-урок «Нейросети простым языком» — первые шаги за 30 минут
+    </footer>
+
+  </div>
+
+</body>
+</html>

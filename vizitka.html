@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Анна Жарко — визитка</title>
+<style>
+  :root{
+    --bg: #0a0a0a;
+    --card-bg: #121212;
+    --border: rgba(255,255,255,0.08);
+    --text: #f2f2f2;
+    --muted: #9a9a9a;
+    --accent1: #7c3aed;
+    --accent2: #06b6d4;
+    --accent3: #ec4899;
+  }
+
+  *{ box-sizing: border-box; }
+
+  html, body{
+    margin: 0;
+    padding: 0;
+    height: 100%;
+  }
+
+  body{
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* animated background glow */
+  body::before, body::after{
+    content: "";
+    position: fixed;
+    width: 60vmax;
+    height: 60vmax;
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: 0.25;
+    z-index: 0;
+    pointer-events: none;
+  }
+  body::before{
+    background: radial-gradient(circle, var(--accent1), transparent 70%);
+    top: -20vmax;
+    left: -15vmax;
+    animation: float1 14s ease-in-out infinite alternate;
+  }
+  body::after{
+    background: radial-gradient(circle, var(--accent2), transparent 70%);
+    bottom: -20vmax;
+    right: -15vmax;
+    animation: float2 16s ease-in-out infinite alternate;
+  }
+
+  @keyframes float1{
+    from{ transform: translate(0,0) scale(1); }
+    to{ transform: translate(4vmax, 3vmax) scale(1.1); }
+  }
+  @keyframes float2{
+    from{ transform: translate(0,0) scale(1); }
+    to{ transform: translate(-4vmax, -3vmax) scale(1.15); }
+  }
+
+  .card{
+    position: relative;
+    z-index: 1;
+    width: min(420px, 90vw);
+    background: linear-gradient(160deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01));
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 48px 32px 36px;
+    text-align: center;
+    backdrop-filter: blur(10px);
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,0.02) inset,
+      0 20px 60px rgba(0,0,0,0.6);
+    animation: cardIn 0.7s cubic-bezier(.2,.9,.2,1) both;
+  }
+
+  @keyframes cardIn{
+    from{ opacity: 0; transform: translateY(24px) scale(0.97); }
+    to{ opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .avatar-ring{
+    width: 96px;
+    height: 96px;
+    margin: 0 auto 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: conic-gradient(from 0deg, var(--accent1), var(--accent2), var(--accent3), var(--accent1));
+    animation: spin 6s linear infinite;
+    padding: 3px;
+  }
+
+  @keyframes spin{
+    to{ transform: rotate(360deg); }
+  }
+
+  .avatar-inner{
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: var(--card-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 34px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .name{
+    font-size: clamp(28px, 6vw, 38px);
+    font-weight: 800;
+    margin: 0 0 8px;
+    letter-spacing: -0.5px;
+    background: linear-gradient(90deg, var(--accent1), var(--accent2), var(--accent3), var(--accent1));
+    background-size: 300% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: gradientShift 6s ease-in-out infinite;
+    text-shadow: 0 0 40px rgba(124, 58, 237, 0.35);
+  }
+
+  @keyframes gradientShift{
+    0%{ background-position: 0% 50%; }
+    50%{ background-position: 100% 50%; }
+    100%{ background-position: 0% 50%; }
+  }
+
+  .role{
+    color: var(--muted);
+    font-size: 15px;
+    margin: 0 0 28px;
+    line-height: 1.5;
+  }
+
+  .socials{
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 30px;
+  }
+
+  .social-btn{
+    width: 52px;
+    height: 52px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    color: var(--text);
+    text-decoration: none;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease, border-color 0.25s ease;
+    position: relative;
+  }
+
+  .social-btn svg{
+    width: 24px;
+    height: 24px;
+    transition: transform 0.25s ease;
+    fill: currentColor;
+  }
+
+  .social-btn:hover{
+    transform: translateY(-6px) scale(1.06);
+    background: rgba(124, 58, 237, 0.12);
+    border-color: rgba(124, 58, 237, 0.5);
+    box-shadow: 0 10px 30px rgba(124, 58, 237, 0.35);
+    color: #a78bfa;
+  }
+
+  .social-btn:hover svg{
+    transform: rotate(-8deg) scale(1.1);
+  }
+
+  .cta{
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 16px 24px;
+    border: none;
+    border-radius: 16px;
+    font-size: 16px;
+    font-weight: 700;
+    color: #0a0a0a;
+    background: linear-gradient(90deg, var(--accent2), var(--accent1));
+    background-size: 200% 100%;
+    cursor: pointer;
+    text-decoration: none;
+    overflow: hidden;
+    transition: background-position 0.5s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    box-shadow: 0 8px 24px rgba(6, 182, 212, 0.25);
+  }
+
+  .cta:hover{
+    background-position: 100% 0;
+    transform: translateY(-3px);
+    box-shadow: 0 14px 34px rgba(124, 58, 237, 0.45);
+  }
+
+  .cta:active{
+    transform: translateY(0px) scale(0.98);
+  }
+
+  .cta::after{
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -60%;
+    width: 40%;
+    height: 100%;
+    background: linear-gradient(120deg, transparent, rgba(255,255,255,0.55), transparent);
+    transform: skewX(-20deg);
+    animation: shine 3s ease-in-out infinite;
+  }
+
+  @keyframes shine{
+    0%{ left: -60%; }
+    50%{ left: 130%; }
+    100%{ left: 130%; }
+  }
+
+  .cta svg{
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+    position: relative;
+    z-index: 1;
+  }
+
+  .cta span{
+    position: relative;
+    z-index: 1;
+  }
+
+  .footer-note{
+    margin-top: 22px;
+    font-size: 12px;
+    color: #555;
+    letter-spacing: 0.3px;
+  }
+
+  @media (max-width: 480px){
+    .card{
+      padding: 40px 22px 28px;
+    }
+    .social-btn{
+      width: 48px;
+      height: 48px;
+    }
+  }
+</style>
+</head>
+<body>
+
+  <div class="card">
+    <div class="avatar-ring">
+      <div class="avatar-inner">АЖ</div>
+    </div>
+
+    <h1 class="name">Анна Жарко</h1>
+    <p class="role">Нейросети и онлайн-инструменты</p>
+
+    <div class="socials">
+      <a class="social-btn" href="https://t.me/anyjar" target="_blank" rel="noopener" aria-label="Telegram">
+        <svg viewBox="0 0 24 24"><path d="M21.94 4.36c.27-1.1-.86-1.98-1.87-1.5L2.4 10.7c-1.09.5-1.08 2.06.02 2.55l4.4 1.94 1.7 5.48c.24.78 1.23.99 1.79.37l2.4-2.65 4.4 3.28c.9.67 2.19.18 2.42-.92l3.4-16.4Zm-3.98 2.7L9.4 14.02l-.35 3.6-1.4-4.5 10.3-6.06Z"/></svg>
+      </a>
+    </div>
+
+    <a class="cta" href="https://t.me/anyjar" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24"><path d="M21.94 4.36c.27-1.1-.86-1.98-1.87-1.5L2.4 10.7c-1.09.5-1.08 2.06.02 2.55l4.4 1.94 1.7 5.48c.24.78 1.23.99 1.79.37l2.4-2.65 4.4 3.28c.9.67 2.19.18 2.42-.92l3.4-16.4Zm-3.98 2.7L9.4 14.02l-.35 3.6-1.4-4.5 10.3-6.06Z"/></svg>
+      <span>Написать мне</span>
+    </a>
+
+    <p class="footer-note">Всегда открыта для интересных проектов</p>
+  </div>
+
+</body>
+</html>
